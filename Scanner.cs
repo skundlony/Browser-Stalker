@@ -1,62 +1,30 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using WebStalker.Types;
 
 namespace WebStalker
 {
     public class Scanner
     {
-        private List<Browser> Browsers = new List<Browser>();
-        private Object _lock = new Object();
-
-        public List<Browser> GetActiveBrowsers()
-        {
-            lock (_lock)
-            {
-                return Browsers;
-            }
-        }
-
         public async void Scan()
         {
+            Console.WriteLine("Scanner started.");
+            
             await Task.Run(() =>
             {
+                var browser = new Browser();
                 while (true)
                 {
-                    // uruchomic instancje firefox / chrome
-                    // kazda instancja typu browser ma zwracac liste processow
                     Task.Run(() =>
                     {
-                        var firefox = new Firefox();
-                        // dodac firefoxy
-                        var firefoxProc = firefox.LookForProcess();
-                        foreach(var proc in firefoxProc)
-                        {
-                            Browsers.Add(new Firefox() { Spid = proc.Id });
-                        }
-
-                        Console.WriteLine($"Updated pool with {firefox.ProcessName}");
+                        browser.StalkBrowser();
                     });
-
-                    Console.WriteLine("Skaner sobie chodzi");
-                    Thread.Sleep(1000);
+                    
+                    Thread.Sleep(2000); // check every 5s
                 }
             });
         }
-
-        private void UpdateProcPool<T>(T brow)
-        {
-            lock (_lock)
-            {
-                // add new one 
-                Browsers.Add(T.GetType());
-            }
-        }
-
     }
 }
