@@ -48,7 +48,7 @@ namespace WebStalker
             }
         }
 
-        public async void StalkEach(int procId, string procName)
+        private async void StalkEach(int procId, string procName)
         {
             await Task.Run(() =>
             {
