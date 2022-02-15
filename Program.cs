@@ -11,13 +11,9 @@ namespace WebStalker
     {
         static void Main(string[] args)
         {
-            var scanner = new Scanner();
-            scanner.Scan();
-
-            while(true)
-            {
-
-            }
+            Console.WriteLine("Scanner started.");
+            new Stalker(2000)
+                .StalActiveBrowsersTabs();
         }
     }
 }
