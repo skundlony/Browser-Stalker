@@ -33,9 +33,9 @@ namespace WebStalker
             "opera",
             "msedge"
         };
-        
 
-        private IEnumerable<int> GetBrowserProcessIds(string procName) 
+
+        private IEnumerable<int> GetBrowserProcessIds(string procName)
         {
             if (string.IsNullOrEmpty(procName))
                 throw null;
@@ -49,31 +49,29 @@ namespace WebStalker
             {
                 Parallel.ForEach(browserNames, (browser) =>
                 {
-                    var spidsWorkers = GetBrowserProcessIds(browser);
-
-                    foreach (var spid in spidsWorkers)
-                    {
-                        StalkEach(spid, browser);
-                    }
+                    StalkEach(browser);
                 });
 
                 Thread.Sleep(sleepTimeMs);
             }
         }
 
-        private async void StalkEach(int procId, string procName)
+        private async void StalkEach(string procName)
         {
             await Task.Run(() =>
             {
-                var proc = Process.GetProcessById(procId);
-                if (!string.IsNullOrEmpty(proc.MainWindowTitle))
+                var processes = Process.GetProcessesByName(procName);
+                foreach (var proc in processes)
                 {
-                    IntPtr hWnd = proc.MainWindowHandle;
-                    int length = GetWindowTextLength(hWnd);
+                    if (!string.IsNullOrEmpty(proc.MainWindowTitle))
+                    {
+                        IntPtr hWnd = proc.MainWindowHandle;
+                        int length = GetWindowTextLength(hWnd);
 
-                    StringBuilder text = new StringBuilder(length + 1);
-                    GetWindowText(hWnd, text, text.Capacity);
-                    Console.WriteLine($"{DateTime.Now} - {text} ({procName})");
+                        StringBuilder text = new StringBuilder(length + 1);
+                        GetWindowText(hWnd, text, text.Capacity);
+                        Console.WriteLine($"{DateTime.Now} - {text} ({procName})");
+                    }
                 }
             });
         }
