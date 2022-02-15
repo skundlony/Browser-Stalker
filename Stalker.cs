@@ -47,7 +47,7 @@ namespace WebStalker
         {
             while (true)
             {
-                foreach (var browser in browserNames)
+                Parallel.ForEach(browserNames, (browser) =>
                 {
                     var spidsWorkers = GetBrowserProcessIds(browser);
 
@@ -55,7 +55,7 @@ namespace WebStalker
                     {
                         StalkEach(spid, browser);
                     }
-                }
+                });
 
                 Thread.Sleep(sleepTimeMs);
             }
