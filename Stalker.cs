@@ -43,7 +43,7 @@ namespace WebStalker
             return Process.GetProcessesByName(procName).Select(x => x.Id);
         }
 
-        public void StalActiveBrowsersTabs()
+        public void StalkActiveBrowsersTabs()
         {
             while (true)
             {

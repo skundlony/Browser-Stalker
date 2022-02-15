@@ -13,7 +13,7 @@ namespace WebStalker
         {
             Console.WriteLine("Scanner started.");
             new Stalker(2000)
-                .StalActiveBrowsersTabs();
+                .StalkActiveBrowsersTabs();
         }
     }
 }
